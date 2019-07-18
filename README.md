@@ -10,6 +10,8 @@ Liz Mahoney
 
 ## Getting Started
 
+### On AWS Simple Queue Service
+
 Go to your AWS Simple Queue Service console and click the `Get Started Now`button.
 
 On the Create New Queue page:
@@ -39,6 +41,29 @@ Under `Permissions` tab, click `add permissions`,  Select checkbox: `Everybody(*
 ***Go to AWS IAM*** 
 
 On sidebar, click `Users` add `AmazonSQSFullAccess` permissions
+
+### Create a Java Application
+
+Run command line: `gradle init`, and select a java application 
+
+Once its create, go to `build.gradle` file and update dependencies:
+
+```
+dependencies {
+    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.228')
+    implementation 'com.amazonaws:aws-java-sdk-sqs'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+```
+
+***To run application***
+
+` ./gradlew run`
+
+***To test application***
+
+` ./gradlew test`
+
 
 
 ## Resources
