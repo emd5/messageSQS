@@ -2,11 +2,7 @@ package messageSQS;
 
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
-import com.amazonaws.services.sqs.model.AmazonSQSException;
-import com.amazonaws.services.sqs.model.CreateQueueResult;
 import com.amazonaws.services.sqs.model.Message;
-import com.amazonaws.services.sqs.model.SendMessageBatchRequest;
-import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 
 import java.util.List;
@@ -19,30 +15,32 @@ public class SendReceiveMessages
 
     public static void main(String[] args)
     {
-        sendreceive("Hello World for A" , QUEUE_A);
-        sendreceive("Hello World for B" , QUEUE_B);
-        sendreceive("Hello World for C" , QUEUE_C);
-
+        sendReceive("Hello World for A" , QUEUE_A);
+        sendReceive("Hello World for B" , QUEUE_B);
+        sendReceive("Hello World for C" , QUEUE_C);
     }
 
-    public static void sendreceive(String msg, String queue){
+    public static void sendReceive(String msg, String queue){
         final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
 
         String queueUrl = queue;
 
         SendMessageRequest send_msg_request = new SendMessageRequest()
                 .withQueueUrl(queueUrl)
-                .withMessageBody(msg)
-                .withDelaySeconds(5);
+                .withMessageBody(msg);
+//                .withDelaySeconds(5);
         sqs.sendMessage(send_msg_request);
 
-        // receive messages from the queue
         List<Message> messages = sqs.receiveMessage(queueUrl).getMessages();
 
-        // delete messages from the queue
-        for (Message m : messages) {
-            sqs.deleteMessage(queueUrl, m.getReceiptHandle());
+        while(messages.size() > 0 ){
+//
+//        // delete messages from the queue
+            for (Message m : messages) {
+                System.out.println(m.getBody());
+                sqs.deleteMessage(queueUrl, m.getReceiptHandle());
+            }
+            messages = sqs.receiveMessage(queueUrl).getMessages();
         }
-
     }
 }
